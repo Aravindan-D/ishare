@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>file share</title>
+    <style>
+        table, th, td {
+          border: 1px solid black;
+          font-size: ;
+        }
+        th, td {
+            padding: 10px;
+            }
+        </style>
+</head>
+<body>
+    <body>
+        <h1>File Share</h1>
+    
+        {% if success_message %}
+        <div style="color: green">{{ success_message }}</div>
+        {% endif %}
+    
+    
+    
+        <h2>Upload a File:</h2>
+        <form action="/file" method="post" enctype="multipart/form-data">
+            <input type="file" name="file">
+            <button type="submit">Upload</button>
+        </form>
+
+<br><br>    
+        <h2>Files:</h2>
+        <table>
+            <tr>
+                <th>File Name</th>
+                <th>Download</th>
+                <th>Delete</th>
+            </tr>
+            {% for file in files %}
+            <tr>
+                <td><a href="{{ url_for('download_file', filename=file) }}">{{ file }}</a></td>
+                <td><a href="{{ url_for('download_file', filename=file) }}">Download</a></td>
+                <td><a href="{{ url_for('delete_file', filename=file) }}" onclick="return confirm('Are you sure you want to delete {{ file }}?')">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+        
+</body>
+</html>

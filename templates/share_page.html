@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>iShare</title>
+</head>
+<div style="display: flex; justify-content: space-between; align-items: left;"></div>
+<body style="background: #272822;">
+    <h1 style="color: white;font-family:verdana;">&nbsp;iShare / {{share_string}}</h1>
+      <!-- Download Button -->
+     <button onclick="downloadText()" 
+     style="margin-left: 10px; padding: 5px 10px; background: #007bff; color: white; border: none; cursor: pointer; border-radius: 5px;">
+ Download
+</button>
+</div>
+  
+
+<br><br>
+  
+
+    <textarea  id="editable-paragraph" style="background: #272822; color: white; height:528px; width: 1104px;"contenteditable="true">{{editable_data}}</textarea >
+
+    <script>
+        const paragraph = document.getElementById('editable-paragraph');
+        paragraph.addEventListener('input', () => {
+            const editedContent = paragraph.value;
+            updateParagraphContent(editedContent);
+        });
+
+        function updateParagraphContent(content) {
+            fetch('/share/{{share_string}}', {
+                method: 'POST',
+                body: new URLSearchParams({ 'content': content }),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Content updated successfully.');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating content:', error);
+            });
+        }
+
+
+        function downloadText() {
+            let text = document.getElementById("editable-paragraph").value;
+            let blob = new Blob([text], { type: "text/plain" });
+
+            // Use the Jinja variable for the filename
+            let filename = "{{ share_string }}.txt";
+
+            let link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;  // Set the dynamic filename
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
